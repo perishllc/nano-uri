@@ -70,7 +70,7 @@ npm install nano-uri
 ### In web
 
 ```html
-<script src="https://unpkg.com/nano-uri@1.1.0" type="text/javascript"></script>
+<script src="https://unpkg.com/nano-uri@1.1.1" type="text/javascript"></script>
 <script type="text/javascript">
     NanoURI.generate.auth(...);
     NanoURI.generate.handoff(...);
@@ -108,6 +108,17 @@ const data = {
 
     // @optional message:
     message: "Thank you for using Nautilus!"
+
+    // @optional exact: (default: true), whether the amount must match exactly
+    // if false, amounts >= amount will be accepted
+    exact: true,
+
+    // @optional work: (default: true), whether the endpoint supports work generation
+    // if false, the wallet must provide the work for the block by some other means (CURRENTLY UNSUPPORTED IN NAUTILUS)
+    work: true,
+
+    // @optional reuse: (default: false), whether this request can be reused for future deposits
+    reuse: false,
 }
 
 // @optional: privateKey of the account that is requesting payment, to sign the request:

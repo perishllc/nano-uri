@@ -9,6 +9,9 @@ export default class URIGenerator {
       message = "",
       amount = "1000000000000000000000000000000",
       methods = undefined,
+      exact = true,
+      work = true,
+      reuse = false,
     } = options;
 
     if (!account) {
@@ -27,6 +30,9 @@ export default class URIGenerator {
       message: message as string | undefined,
       methods: methods,
       amount: amount,
+      exact,
+      work,
+      reuse,
       signature: undefined as string | undefined,
     };
 
