@@ -1,15 +1,65 @@
 # nano-uri
 
-[![npm version](https://badge.fury.io/js/nanocurrency-web.svg)](https://badge.fury.io/js/nanocurrency-web)
-[![GitHub license](https://img.shields.io/github/license/perishllc/nano-uri)](https://github.com/numsu/nanocurrency-web-js/blob/master/LICENSE)
+[![npm version](https://badge.fury.io/js/nano-uri.svg)](https://badge.fury.io/js/nano-uri)
+[![GitHub license](https://img.shields.io/github/license/perishllc/nano-uri)](https://github.com/perishllc/nano-uri/blob/main/LICENSE)
 
-Tools for creating nanopay and nanoauth URIs.
+Library for creating nanopay and nanoauth URIs for use with nautilus.
+
+
+If there are API-level breaking changes to the library, a major version bump (X.0.0) will be made along with a reddit post announcing the change.
+
+
+Note that Nautilus will only ever gaurantee support for the latest version of this library, with as much backwards compatiblity as is reasonable.
+That being said, I don't expect all that much to change.
 
 ## Features
 
-* Generate `nanopay` and `nanoauth` uri schemes
+* Easily generate `nanopay` and `nanoauth` URI schemes
 
----
+
+## Examples
+
+### Example Link / QR
+<a href="nanopay:eyJhY2NvdW50IjoibmFub18zODcxM3g5NXp5anNxeng2bm0xZHNvbTFqbW02Njhvd2tlYjk5MTNheDZuZmdqMTVhejNudTh4a3g1NzkiLCJhbW91bnQiOiIxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwibGFiZWwiOiJOYXV0aWx1cyBEb25hdGlvbiIsIm1lc3NhZ2UiOiJibG9jayBoYW5kb2ZmIHRlc3QiLCJtZXRob2RzIjpbeyJ0eXBlIjoiaHR0cCIsInVybCI6Imh0dHBzOi8vbmF1dGlsdXMucGVyaXNoLmNvL2hhbmRvZmYifV19">
+  <img src="https://imagedelivery.net/uA65-M4gr037oB0C4RNdvw/e98e27b0-6314-4f0b-6ade-142c426dfa00/public" width="225"/>
+</a>
+
+
+### Example Backend Code (js)
+
+This is the format that Nautilus expects as a response:
+
+```javascript
+// TODO: finish this
+
+// Example POST JSON responses:
+// Example Success:
+{
+    // 0 = success
+    "status": 0,
+    "label": "Order #1234 - Example Service",
+    "message": "Thank you for your purchase!",
+    "data": {/* arbitrary transaction metadata */}
+}
+
+// Example Error:
+{
+    
+    "status": int,
+    // 0 = success
+    // 1 = Invalid Block / incorrect formatting
+    // 2 = Invalid Block Work
+    // 3 = Incorrect Block state
+    // 4 = Incorrect amount / destination (non-sufficient funds)
+    // 5 = Block has already been published
+    // 6 = Single use block handoff ID has already been used
+    // 7 = Payment rejected for any other reason
+    "message": "<What went wrong>",
+}
+
+
+```
+
 
 ## Installation
 ### From NPM
@@ -20,9 +70,10 @@ npm install nano-uri
 ### In web
 
 ```html
-<script src="https://unpkg.com/nano-uri@1.0.0" type="text/javascript"></script>
+<script src="https://unpkg.com/nano-uri@1.1.0" type="text/javascript"></script>
 <script type="text/javascript">
     NanoURI.generate.auth(...);
+    NanoURI.generate.handoff(...);
 </script>
 ```
 
@@ -49,17 +100,17 @@ const data = {
       }
     ],
 
-    // @required amount: The amount of NANO to send
+    // @required amount: The amount of NANO to send (in RAW):
     amount: "1000000000000000000000000000000",
 
     // @optional label: What the transaction is for
     label: "Block handoff test",
 
     // @optional message:
-    message: "Block handoff example",
+    message: "Thank you for using Nautilus!"
 }
 
-// privateKey of the account that is requesting payment
+// @optional: privateKey of the account that is requesting payment, to sign the request:
 const privateKey = "75E96A80812E6D7B2B9802AB50B8D8E2628EC98C2A3894978F776652BC7B7F01"
 
 // Returns a correctly formatted and signed nanopay:<base64Encoded> URI
@@ -99,22 +150,42 @@ const data = {
     format = ["nonce", "timestamp", "label", "account"],
 
     // @optional separator: separator to use in the format when signing the response:
-    separator = ":",
+    separator = ":"
 }
 
-// privateKey of the account that is requesting authentication
+// @optional: privateKey of the account that is requesting authentication, to sign the request:
 const privateKey = "75E96A80812E6D7B2B9802AB50B8D8E2628EC98C2A3894978F776652BC7B7F01"
 
-// Returns a correctly formatted and signed nanopay:<base64Encoded> URI
+// Returns a correctly formatted and signed nanoauth:<base64Encoded> URI
 const requestURI = generate.auth(data, privateKey)
 
 // Alternatively, you can use a backwards compatible format by generating the blob the same way, and then adding it as a URI parameter like so:
 // note that if put into a QR code it can be hard to scan depending on the size, so it's recommended to only use this in the form of a clickable link:
-const handoffBlob = generate.authBlob(data, privateKey)
-const requestURI = `${generate.nano(data)}&auth=${handoffBlob}`
+const authBlob = generate.authBlob(data, privateKey)
+const requestURI = `${generate.nano(data)}&auth=${authBlob}`
+```
+
+#### Creating a regular `nano:` URI
+
+```javascript
+import { generate } from 'nano-uri'
+
+const data = {
+    // @required account: Where the user should send funds to:
+    account: "nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
+
+    // @optional label: What the transaction is for
+    label: "NANO URI test",
+
+    // @optional message:
+    message: "Thank you for using Nautilus!"
+}
+
+// Returns a correctly formatted nano: URI
+const requestURI = generate.nano(data)
 ```
 
 ## Donate
 
 If this project helped you, feel free to donate at the Nautilus Node's address:
-`nano_38713x95zyjsqzx6nm1dsom1jmm668owkeb9913ax6nfgj15az3nu8xkx579`
+[`nano_38713x95zyjsqzx6nm1dsom1jmm668owkeb9913ax6nfgj15az3nu8xkx579`](https://nano.to/nautilus)
