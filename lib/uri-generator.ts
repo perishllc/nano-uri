@@ -128,7 +128,11 @@ export default class URIGenerator {
     const publicKey = tools.addressToPublicKey(options.account);
 
 
-    let formatted = String.fromCharCode(...hexStringToByteArray(options.formatted));
+    let formatted = String.fromCharCode(...hexStringToByteArray(options.signed));
+
+    if (options.formatted != formatted) {
+      throw new Error("formatted != signed");
+    }
 
     return tools.verify(publicKey, options.signature, options.signed);
   }

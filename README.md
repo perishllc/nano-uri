@@ -70,10 +70,11 @@ npm install nano-uri
 ### In web
 
 ```html
-<script src="https://unpkg.com/nano-uri@1.1.4" type="text/javascript"></script>
+<script src="https://unpkg.com/nano-uri@1.1.5" type="text/javascript"></script>
 <script type="text/javascript">
     NanoURI.generate.auth(...);
     NanoURI.generate.handoff(...);
+    NanoURI.verify.auth(...);
 </script>
 ```
 
@@ -198,7 +199,7 @@ const data = {
 
     // @required signed: the text that was signed:
     signed: "736F6D655F72616E646F6D5F6E6F6E63653A313636313339333830303A4C6F67696E20746F205065726973683A6E616E6F5F33383731337839357A796A73717A78366E6D3164736F6D316A6D6D3636386F776B6562393931336178366E66676A3135617A336E7538786B78353739",
-    
+
     // @optional formatted: the decoded signed text:
     formatted: "nonce:1589788984:Login with your NANO Account:nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
 };
