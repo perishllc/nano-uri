@@ -7,7 +7,7 @@ export default class URIGenerator {
       account = undefined,
       label = "",
       message = "",
-      amount = "1000000000000000000000000000000",
+      amount = undefined,
       methods = undefined,
       exact = true,
       work = true,
@@ -45,14 +45,14 @@ export default class URIGenerator {
   }
 
   static handoff(options: any, privateKey?: string): string {
-    let base64EncodedBlob = this.handoffBlob(options);
+    let base64EncodedBlob = this.handoffBlob(options, privateKey);
     return `nanopay:${base64EncodedBlob}`;
   }
 
   static authBlob(options: any, privateKey?: string): string {
     let {
       account = undefined,
-      nonce = "nonce:" + Math.random(), // NOT SECURE PLEASE OVERRIDE
+      nonce = `nonce:${Math.random()}`,
       label = "Login with your NANO Account",
       message = "See this content after login",
       timestamp = Date.now(),
@@ -89,7 +89,7 @@ export default class URIGenerator {
   }
 
   static auth(options: any, privateKey?: string): string {
-    let base64EncodedBlob = this.authBlob(options);
+    let base64EncodedBlob = this.authBlob(options, privateKey);
     return `nanoauth:${base64EncodedBlob}`;
   }
 

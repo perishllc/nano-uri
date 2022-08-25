@@ -70,7 +70,7 @@ npm install nano-uri
 ### In web
 
 ```html
-<script src="https://unpkg.com/nano-uri@1.1.1" type="text/javascript"></script>
+<script src="https://unpkg.com/nano-uri@1.1.2" type="text/javascript"></script>
 <script type="text/javascript">
     NanoURI.generate.auth(...);
     NanoURI.generate.handoff(...);
@@ -151,6 +151,10 @@ const data = {
       }
     ],
 
+    // @optional nonce: A random string to use as a nonce for the authentication request
+    // default:
+    nonce: `nonce:${Math.random()}`,
+
     // @optional label: What the authentication request is for:
     label: "Login with your NANO Account",
 
@@ -158,10 +162,12 @@ const data = {
     message: "See this content after login",
 
     // @optional format: how to sign the response:
-    format = ["nonce", "timestamp", "label", "account"],
+    // default:
+    format: ["nonce", "timestamp", "label", "account"],
 
     // @optional separator: separator to use in the format when signing the response:
-    separator = ":"
+    // default:
+    separator: ":"
 }
 
 // @optional: privateKey of the account that is requesting authentication, to sign the request:
