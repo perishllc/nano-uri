@@ -1,6 +1,20 @@
 import { encode, decode } from "js-base64";
 import { tools } from "nanocurrency-web";
 
+
+function hexStringToByteArray(hexString: string): Uint8Array {
+  if (hexString.length % 2 !== 0) {
+      throw "Must have an even number of hex digits to convert to bytes";
+  }
+  var numBytes = hexString.length / 2;
+  var byteArray = new Uint8Array(numBytes);
+  for (var i=0; i<numBytes; i++) {
+      byteArray[i] = parseInt(hexString.substr(i*2, 2), 16);
+  }
+  return byteArray;
+}
+
+
 export default class URIGenerator {
   static handoffBlob(options: any, privateKey?: string): string {
     let {
@@ -93,6 +107,26 @@ export default class URIGenerator {
     return `nanoauth:${base64EncodedBlob}`;
   }
 
+  static verifyAuth(options: any, privateKey?: string): boolean {
+
+    if (!options.account) {
+      throw new Error("account is required");
+    }
+    if (!options.signature) {
+      throw new Error("signature is required");
+    }
+    if (!options.formatted) {
+      throw new Error("formatted is required");
+    }
+
+    const publicKey = tools.addressToPublicKey(options.account);
+
+
+    let formatted = String.fromCharCode(...hexStringToByteArray(options.formatted));
+
+    return tools.verify(publicKey, options.signature, formatted);
+  }
+
   static nano(options: any): string {
     if (!options.account) {
       throw new Error("account is required");
@@ -126,4 +160,6 @@ export default class URIGenerator {
 
     return nanoStr;
   }
+
+
 }

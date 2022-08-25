@@ -1,5 +1,6 @@
-
 import URIGenerator from "./lib/uri-generator";
+
+import { tools } from "nanocurrency-web";
 
 const generate = {
   handoffBlob: (options: any, privateKey?: string): string => {
@@ -19,6 +20,11 @@ const generate = {
   },
 };
 
-export {
-	generate
-}
+const verify = {
+  auth: (options: any, privateKey?: string): boolean => {
+
+    return URIGenerator.verifyAuth(options, privateKey);
+  },
+};
+
+export { generate, verify };
