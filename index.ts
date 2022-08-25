@@ -21,9 +21,9 @@ const generate = {
 };
 
 const verify = {
-  auth: (options: any, privateKey?: string): boolean => {
+  auth: (options: any): boolean => {
 
-    return URIGenerator.verifyAuth(options, privateKey);
+    return URIGenerator.verifyAuth(options);
   },
 };
 

@@ -70,7 +70,7 @@ npm install nano-uri
 ### In web
 
 ```html
-<script src="https://unpkg.com/nano-uri@1.1.3" type="text/javascript"></script>
+<script src="https://unpkg.com/nano-uri@1.1.4" type="text/javascript"></script>
 <script type="text/javascript">
     NanoURI.generate.auth(...);
     NanoURI.generate.handoff(...);
@@ -183,7 +183,7 @@ const requestURI = `${generate.nano(data)}&auth=${authBlob}`;
 ```
 
 
-#### Verifying an authentication request:
+#### Verifying an authentication request
 
 ```javascript
 import { verify } from "nano-uri";
@@ -195,9 +195,12 @@ const data = {
     // @required signature: signature of the request:
     signature: "C1FCCB4092AF1A2683BA3DB0F69FFFC11A961E995C3C10ACFB5F302767E91BB340A1475000AAEDD94E36D45DA0FC91DEEB9B02ABCEF7B98FBF78B5B3B9419D0C",
     
-    // @required formatted:
-    // encoded: "nonce:1589788984:Login with your NANO Account:nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
-    formatted: "736F6D655F72616E646F6D5F6E6F6E63653A313636313339333830303A4C6F67696E20746F205065726973683A6E616E6F5F33383731337839357A796A73717A78366E6D3164736F6D316A6D6D3636386F776B6562393931336178366E66676A3135617A336E7538786B78353739",
+
+    // @required signed: the text that was signed:
+    signed: "736F6D655F72616E646F6D5F6E6F6E63653A313636313339333830303A4C6F67696E20746F205065726973683A6E616E6F5F33383731337839357A796A73717A78366E6D3164736F6D316A6D6D3636386F776B6562393931336178366E66676A3135617A336E7538786B78353739",
+    
+    // @optional formatted: the decoded signed text:
+    formatted: "nonce:1589788984:Login with your NANO Account:nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
 };
 
 // true if the signature is valid, false otherwise

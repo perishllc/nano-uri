@@ -107,14 +107,20 @@ export default class URIGenerator {
     return `nanoauth:${base64EncodedBlob}`;
   }
 
-  static verifyAuth(options: any, privateKey?: string): boolean {
+  static verifyAuth(options: any): boolean {
 
     if (!options.account) {
       throw new Error("account is required");
     }
+
     if (!options.signature) {
       throw new Error("signature is required");
     }
+
+    if (!options.signed) {
+      throw new Error("signed is required");
+    }
+
     if (!options.formatted) {
       throw new Error("formatted is required");
     }
@@ -124,7 +130,7 @@ export default class URIGenerator {
 
     let formatted = String.fromCharCode(...hexStringToByteArray(options.formatted));
 
-    return tools.verify(publicKey, options.signature, formatted);
+    return tools.verify(publicKey, options.signature, options.signed);
   }
 
   static nano(options: any): string {
