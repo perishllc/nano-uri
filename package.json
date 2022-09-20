@@ -1,6 +1,6 @@
 {
   "name": "nano-uri",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Tools for generating and parsing nano URIs",
   "author": "fossephate",
   "license": "MIT",
@@ -12,13 +12,13 @@
   "bugs": {
     "url": "https://github.com/perishllc/nano-uri/issues"
   },
-	"keywords": [
-		"nano",
-		"currency",
-		"crypto",
-		"uri",
-		"encode"
-	],
+  "keywords": [
+    "nano",
+    "currency",
+    "crypto",
+    "uri",
+    "encode"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "unpkg": "dist/index.min.js",
@@ -28,7 +28,8 @@
   },
   "dependencies": {
     "js-base64": "^3.7.2",
-    "nanocurrency-web": "^1.4.3"
+    "nanocurrency-web": "^1.4.3",
+    "tweetnacl-blake2b": "^1.0.1"
   },
   "devDependencies": {
     "ts-loader": "9.2.8",

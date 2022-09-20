@@ -1,22 +1,19 @@
 import { encode, decode } from "js-base64";
 import { tools } from "nanocurrency-web";
 
+import * as nacl from "tweetnacl-blake2b";
 
-function hexStringToByteArray(hexString: string): Uint8Array {
-  if (hexString.length % 2 !== 0) {
-      throw "Must have an even number of hex digits to convert to bytes";
+
+function hex2ba(hex: string): Uint8Array {
+  const ab = [];
+  for (let i = 0; i < hex.length; i += 2) {
+    ab.push(parseInt(hex.substr(i, 2), 16));
   }
-  var numBytes = hexString.length / 2;
-  var byteArray = new Uint8Array(numBytes);
-  for (var i=0; i<numBytes; i++) {
-      byteArray[i] = parseInt(hexString.substr(i*2, 2), 16);
-  }
-  return byteArray;
+  return new Uint8Array(ab);
 }
 
-
 export default class URIGenerator {
-  static handoffBlob(options: any, privateKey?: string): string {
+  static payBlob(options: any, privateKey?: string): string {
     let {
       account = undefined,
       label = "",
@@ -58,8 +55,8 @@ export default class URIGenerator {
     return base64Blob;
   }
 
-  static handoff(options: any, privateKey?: string): string {
-    let base64EncodedBlob = this.handoffBlob(options, privateKey);
+  static pay(options: any, privateKey?: string): string {
+    let base64EncodedBlob = this.payBlob(options, privateKey);
     return `nanopay:${base64EncodedBlob}`;
   }
 
@@ -108,7 +105,6 @@ export default class URIGenerator {
   }
 
   static verifyAuth(options: any): boolean {
-
     if (!options.account) {
       throw new Error("account is required");
     }
@@ -125,16 +121,18 @@ export default class URIGenerator {
       throw new Error("formatted is required");
     }
 
-    const publicKey = tools.addressToPublicKey(options.account);
-
-
-    let formatted = String.fromCharCode(...hexStringToByteArray(options.signed));
+    let formatted = String.fromCharCode(...hex2ba(options.signed));
 
     if (options.formatted != formatted) {
       throw new Error("formatted != signed");
     }
 
-    return tools.verify(publicKey, options.signature, options.signed);
+    let signed = hex2ba(options.signed);
+    let signature = hex2ba(options.signature);
+    let publicKey = hex2ba(tools.addressToPublicKey(options.account));
+    let isValid = nacl.sign.detached.verify(signed, signature, publicKey);
+
+    return isValid;
   }
 
   static nano(options: any): string {
@@ -170,6 +168,4 @@ export default class URIGenerator {
 
     return nanoStr;
   }
-
-
 }

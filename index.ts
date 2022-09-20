@@ -1,13 +1,11 @@
 import URIGenerator from "./lib/uri-generator";
 
-import { tools } from "nanocurrency-web";
-
 const generate = {
-  handoffBlob: (options: any, privateKey?: string): string => {
-    return URIGenerator.handoffBlob(options, privateKey);
+  payBlob: (options: any, privateKey?: string): string => {
+    return URIGenerator.payBlob(options, privateKey);
   },
-  handoff: (options: any, privateKey?: string): string => {
-    return URIGenerator.handoff(options, privateKey);
+  pay: (options: any, privateKey?: string): string => {
+    return URIGenerator.pay(options, privateKey);
   },
   authBlob: (options: any, privateKey?: string): string => {
     return URIGenerator.authBlob(options, privateKey);
@@ -18,11 +16,17 @@ const generate = {
   nano: (options: any): string => {
     return URIGenerator.nano(options);
   },
+  // deprecated: use generate.pay
+  handoffBlob: (options: any, privateKey?: string): string => {
+    return URIGenerator.payBlob(options, privateKey);
+  },
+  handoff: (options: any, privateKey?: string): string => {
+    return URIGenerator.pay(options, privateKey);
+  },
 };
 
 const verify = {
   auth: (options: any): boolean => {
-
     return URIGenerator.verifyAuth(options);
   },
 };
