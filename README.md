@@ -70,7 +70,7 @@ npm install nano-uri
 ### In web
 
 ```html
-<script src="https://unpkg.com/nano-uri@1.1.6" type="text/javascript"></script>
+<script src="https://unpkg.com/nano-uri@1.2.0" type="text/javascript"></script>
 <script type="text/javascript">
     NanoURI.generate.auth(...);
     NanoURI.generate.pay(...);
@@ -108,7 +108,7 @@ const data = {
     label: "Block handoff test",
 
     // @optional message:
-    message: "Thank you for using Nautilus!"
+    message: "Thank you for using Nautilus!",
 
     // @optional exact: (default: true), whether the amount must match exactly
     // if false, amounts >= amount will be accepted
@@ -220,7 +220,7 @@ const data = {
     label: "NANO URI test",
 
     // @optional message:
-    message: "Thank you for using Nautilus!"
+    message: "Thank you for using Nautilus!",
 }
 
 // Returns a correctly formatted nano: URI
