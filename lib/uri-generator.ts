@@ -3,7 +3,6 @@ import { tools } from "nanocurrency-web";
 
 import * as nacl from "tweetnacl-blake2b";
 
-
 function hex2ba(hex: string): Uint8Array {
   const ab = [];
   for (let i = 0; i < hex.length; i += 2) {
@@ -23,6 +22,7 @@ export default class URIGenerator {
       exact = true,
       work = true,
       reuse = false,
+      metadata = {},
     } = options;
 
     if (!account) {
@@ -45,6 +45,7 @@ export default class URIGenerator {
       work,
       reuse,
       signature: undefined as string | undefined,
+      metadata: metadata as any | undefined,
     };
 
     if (privateKey != null) {
@@ -70,6 +71,7 @@ export default class URIGenerator {
       methods = undefined,
       format = ["nonce", "timestamp", "label", "account"],
       separator = ":",
+      metadata = {},
     } = options;
 
     if (!account) {
@@ -89,6 +91,7 @@ export default class URIGenerator {
       format: format,
       separator: separator,
       signature: undefined as string | undefined,
+      metadata: metadata as any | undefined,
     };
 
     if (privateKey != null) {
@@ -138,32 +141,19 @@ export default class URIGenerator {
   static nano(options: any): string {
     if (!options.account) {
       throw new Error("account is required");
+    } else if (!options.amount) {
+      throw new Error("amount is required");
     }
 
     let nanoStr = `nano:${options.account}`;
-
-    if (options.amount) {
-      nanoStr += `?amount=${options.amount}`;
-    }
+    nanoStr += `?amount=${options.amount}`;
 
     if (options.label) {
-      if (options.amount) {
-        nanoStr += "&";
-      } else {
-        nanoStr += "?";
-      }
-
-      nanoStr += `label=${options.label}`;
+      nanoStr += `&label=${options.label}`;
     }
 
     if (options.message) {
-      if (options.amount || options.label) {
-        nanoStr += "&";
-      } else {
-        nanoStr += "?";
-      }
-
-      nanoStr += `message=${options.label}`;
+      nanoStr += `&message=${options.message}`;
     }
 
     return nanoStr;

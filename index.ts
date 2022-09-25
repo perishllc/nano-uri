@@ -1,4 +1,7 @@
 import URIGenerator from "./lib/uri-generator";
+import Verifier from "./lib/verifier";
+import Signer from "./lib/signer";
+
 
 const generate = {
   payBlob: (options: any, privateKey?: string): string => {
@@ -16,19 +19,21 @@ const generate = {
   nano: (options: any): string => {
     return URIGenerator.nano(options);
   },
-  // deprecated: use generate.pay
-  handoffBlob: (options: any, privateKey?: string): string => {
-    return URIGenerator.payBlob(options, privateKey);
-  },
-  handoff: (options: any, privateKey?: string): string => {
-    return URIGenerator.pay(options, privateKey);
-  },
 };
 
 const verify = {
-  auth: (options: any): boolean => {
-    return URIGenerator.verifyAuth(options);
+  auth: (options: any, privateKey?: string): boolean => {
+    return Verifier.auth(options);
   },
 };
 
-export { generate, verify };
+const signer = {
+  auth: (options: any, privateKey?: string): any => {
+    return Signer.auth(options, privateKey);
+  },
+  pay: (options: any, privateKey?: string): any => {
+    return Signer.auth(options, privateKey);
+  },
+};
+
+export { generate, verify, signer };
