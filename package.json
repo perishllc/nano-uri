@@ -1,6 +1,6 @@
 {
   "name": "nano-uri",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "Tools for generating and parsing nano URIs",
   "author": "fossephate",
   "license": "MIT",

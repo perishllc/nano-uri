@@ -95,6 +95,7 @@ const data = {
   methods: [
     {
       type: "http",
+      subtype: "handoff",
       url: "https://nautilus.perish.co/handoff",
     },
   ],
@@ -152,6 +153,7 @@ const data = {
   methods: [
     {
       type: "http",
+      subtype: "handoff",
       url: "https://nautilus.perish.co/auth",
     },
   ],
