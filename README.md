@@ -221,6 +221,35 @@ const data = {
 const isValid = verify.auth(data);
 ```
 
+#### Creating a Subscription request
+
+```javascript
+import { generate } from "nano-uri";
+
+const data = {
+  // @required account: Where the user should send funds to:
+  account: "nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
+
+  // @required amount: The amount of NANO to send (in RAW):
+  amount: "1000000000000000000000000000000",
+
+  // @required frequency: How often the subscription should be paid (cron format):
+  frequency: "0 0 1 * *",// every 1st of the month
+
+  // @optional label: What the subscription is for
+  label: "Nautilus Pro",
+
+  // @optional message:
+  message: "Thank you for using Nautilus!",
+};
+
+// @optional: privateKey of the account that is requesting payment, to sign the request:
+const privateKey = "75E96A80812E6D7B2B9802AB50B8D8E2628EC98C2A3894978F776652BC7B7F01";
+
+// Returns a correctly formatted and signed nanosub:<base64Encoded> URI
+const requestURI = generate.sub(data, privateKey);
+```
+
 #### Creating a regular `nano:` URI
 
 ```javascript

@@ -16,6 +16,12 @@ const generate = {
   auth: (options: any, privateKey?: string): string => {
     return URIGenerator.auth(options, privateKey);
   },
+  subBlob: (options: any, privateKey?: string): string => {
+    return URIGenerator.subBlob(options, privateKey);
+  },
+  sub: (options: any, privateKey?: string): string => {
+    return URIGenerator.sub(options, privateKey);
+  },
   nano: (options: any): string => {
     return URIGenerator.nano(options);
   },

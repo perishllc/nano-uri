@@ -22,7 +22,7 @@ export default class URIGenerator {
       exact = true,
       work = true,
       reuse = false,
-      metadata = {},
+      metadata = {}
     } = options;
 
     if (!account) {
@@ -45,7 +45,7 @@ export default class URIGenerator {
       work,
       reuse,
       signature: undefined as string | undefined,
-      metadata: metadata as any | undefined,
+      metadata: metadata as any | undefined
     };
 
     if (privateKey != null) {
@@ -71,7 +71,7 @@ export default class URIGenerator {
       methods = undefined,
       format = ["nonce", "timestamp", "label", "account"],
       separator = ":",
-      metadata = {},
+      metadata = {}
     } = options;
 
     if (!account) {
@@ -91,7 +91,7 @@ export default class URIGenerator {
       format: format,
       separator: separator,
       signature: undefined as string | undefined,
-      metadata: metadata as any | undefined,
+      metadata: metadata as any | undefined
     };
 
     if (privateKey != null) {
@@ -120,14 +120,12 @@ export default class URIGenerator {
       throw new Error("signed is required");
     }
 
-    if (!options.formatted) {
-      throw new Error("formatted is required");
-    }
-
     let formatted = String.fromCharCode(...hex2ba(options.signed));
 
-    if (options.formatted != formatted) {
-      throw new Error("formatted != signed");
+    if (!!options.formatted) {
+      if (options.formatted != formatted) {
+        throw new Error("formatted != signed");
+      }
     }
 
     let signed = hex2ba(options.signed);
@@ -157,5 +155,48 @@ export default class URIGenerator {
     }
 
     return nanoStr;
+  }
+
+  static subBlob(options: any, privateKey?: string): string {
+    let {
+      account = undefined,
+      label = "",
+      message = "",
+      frequency = undefined,
+      amount = undefined,
+      metadata = {}
+    } = options;
+
+    if (!account) {
+      throw new Error("account is required");
+    }
+    if (!amount) {
+      throw new Error("amount is required");
+    }
+    if (!frequency) {
+      throw new Error("frequency is required");
+    }
+
+    let request = {
+      account: account,
+      label: label,
+      message: message as string | undefined,
+      frequency: frequency,
+      amount: amount,
+      signature: undefined as string | undefined,
+      metadata: metadata as any | undefined
+    };
+
+    if (privateKey != null) {
+      request.signature = tools.sign(privateKey, JSON.stringify(request));
+    }
+
+    let base64Blob = encode(JSON.stringify(request));
+    return base64Blob;
+  }
+
+  static sub(options: any, privateKey?: string): string {
+    let base64EncodedBlob = this.subBlob(options, privateKey);
+    return `nanosub:${base64EncodedBlob}`;
   }
 }
