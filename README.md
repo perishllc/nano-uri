@@ -68,10 +68,11 @@ npm install nano-uri
 ### In web
 
 ```html
-<script src="https://unpkg.com/nano-uri@1.2.0" type="text/javascript"></script>
+<script src="https://unpkg.com/nano-uri@2.1.1" type="text/javascript"></script>
 <script type="text/javascript">
   NanoURI.generate.auth(...);
   NanoURI.generate.pay(...);
+  NanoURI.generate.sub(...);
   NanoURI.verify.auth(...);
 </script>
 ```
