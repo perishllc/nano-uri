@@ -10,6 +10,14 @@ If there are API-level breaking changes to the library, a major version bump (X.
 Note that Nautilus will only ever try to support the latest version of this library, with as much backwards compatiblity as is reasonable.
 That being said, I don't expect all that much to change.
 
+
+V3.0 Changes!:
+
+The signing format is now FIXED to reduce complexity on implementations:
+the signer will now sign in this order!: ["timestamp", "label", "account"],
+so with the default separator: ":", a signed message request might look like this:
+"1234567:this is for an nft:nano_1234"
+
 ## Features
 
 - Easily generate `nanopay` and `nanoauth` URI schemes
@@ -44,14 +52,8 @@ This is the format that Nautilus expects as a response:
 
     "status": int,
     // 0 = success
-    // 1 = Invalid Block / incorrect formatting
-    // 2 = Invalid Block Work
-    // 3 = Incorrect Block state
-    // 4 = Incorrect amount / destination (non-sufficient funds)
-    // 5 = Block has already been published
-    // 6 = Single use block handoff ID has already been used
-    // 7 = Payment rejected for any other reason
-    "message": "<What went wrong>",
+    // anything other than 0 == error
+    "message": "<To be shown to the user explaining what went wrong>",
 }
 
 
@@ -90,15 +92,13 @@ const data = {
   // @required account: Where the user should send funds to:
   account: "nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
 
-  // @required methods: A list of supported methods to handoff the block to:
-  // Nautilus currently only supports the "http" method (POST)
-  methods: [
-    {
-      type: "http",
-      subtype: "handoff",
-      url: "https://nautilus.perish.co/handoff",
-    },
-  ],
+  // @required method: how to handoff the block:
+  // Nautilus currently only supports the "post" method (HTTP POST)
+  method: {
+    type: "post",
+    subtype: "handoff",
+    url: "https://nautilus.perish.co/handoff",
+  },
 
   // @required amount: The amount of NANO to send (in RAW):
   amount: "1000000000000000000000000000000",
@@ -116,9 +116,6 @@ const data = {
   // @optional work: (default: true), whether the endpoint supports work generation
   // if false, the wallet must provide the work for the block by some other means (CURRENTLY UNSUPPORTED IN NAUTILUS)
   work: true,
-
-  // @optional reuse: (default: false), whether this request can be reused for future deposits
-  reuse: false,
 
   // @optional metadata: (default: {}), arbitrary metadata to be included in the response
   metadata: {
@@ -145,32 +142,22 @@ const requestURI = `${generate.nano(data)}&pay=${payBlob}`;
 import { generate } from "nano-uri";
 
 const data = {
+  // @required method: how to handoff the block:
+  // Nautilus currently only supports the "post" method (HTTP POST)
+  method: {
+    type: "post",
+    subtype: "handoff",
+    url: "https://nautilus.perish.co/handoff",
+  },
+
   // @required account: Who is requesting the authentication:
   account: "nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
 
-  // @required methods: A list of supported methods to handoff the block to:
-  // Nautilus currently only supports the "http" method (POST)
-  methods: [
-    {
-      type: "http",
-      subtype: "handoff",
-      url: "https://nautilus.perish.co/auth",
-    },
-  ],
-
-  // @optional nonce: A random string to use as a nonce for the authentication request
-  // default:
-  nonce: `nonce:${Math.random()}`,
-
-  // @optional label: What the authentication request is for:
+  // @required label: What the authentication request is for:
   label: "Login with your NANO Account",
 
   // @optional message:
   message: "See this content after login",
-
-  // @optional format: how to sign the response:
-  // default:
-  format: ["nonce", "timestamp", "label", "account"],
 
   // @optional separator: separator to use in the format when signing the response:
   // default:
@@ -214,7 +201,7 @@ const data = {
 
   // @optional formatted: the decoded signed text:
   formatted:
-    "nonce:1589788984:Login with your NANO Account:nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
+    "1589788984:Login with your NANO Account:nano_3yxcenuujnn6x7xmg7frakdm5zqu7418n3udquhpqda53oebata1ne9ukipg",
 };
 
 // true if the signature is valid, false otherwise

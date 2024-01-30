@@ -26,14 +26,11 @@ export default class Verifier {
       throw new Error("signed is required");
     }
 
-    if (!options.formatted) {
-      throw new Error("formatted is required");
-    }
-
-    let formatted = String.fromCharCode(...hex2ba(options.signed));
-
-    if (options.formatted != formatted) {
-      throw new Error("formatted != signed");
+    if (options.formatted) {
+      let formatted = String.fromCharCode(...hex2ba(options.signed));
+      if (options.formatted != formatted) {
+        throw new Error(`!!! formatted != signed! (formatted: ${options.formatted} signed: ${formatted})`);
+      }
     }
 
     let signed = hex2ba(options.signed);
