@@ -1,8 +1,6 @@
 import { encode, decode } from "js-base64";
 import { tools } from "nanocurrency-web";
 
-import * as nacl from "tweetnacl-blake2b";
-
 function hex2ba(hex: string): Uint8Array {
   const ab = [];
   for (let i = 0; i < hex.length; i += 2) {
@@ -43,7 +41,7 @@ export default class URIGenerator {
       exact,
       work,
       signature: undefined as string | undefined,
-      metadata: metadata as any | undefined,
+      metadata: metadata as any | undefined
     };
 
     if (privateKey != null) {
@@ -67,7 +65,7 @@ export default class URIGenerator {
       timestamp = Date.now(),
       method = undefined,
       separator = ":",
-      metadata = {},
+      metadata = {}
     } = options;
 
     if (!account) {
@@ -88,7 +86,7 @@ export default class URIGenerator {
       method: method,
       separator: separator,
       signature: undefined as string | undefined,
-      metadata: metadata as any | undefined,
+      metadata: metadata as any | undefined
     };
 
     if (privateKey != null) {
@@ -123,5 +121,48 @@ export default class URIGenerator {
     }
 
     return nanoStr;
+  }
+
+  static subBlob(options: any, privateKey?: string): string {
+    let {
+      account = undefined,
+      label = "",
+      message = "",
+      frequency = undefined,
+      amount = undefined,
+      metadata = {}
+    } = options;
+
+    if (!account) {
+      throw new Error("account is required");
+    }
+    if (!amount) {
+      throw new Error("amount is required");
+    }
+    if (!frequency) {
+      throw new Error("frequency is required");
+    }
+
+    let request = {
+      account: account,
+      label: label,
+      message: message as string | undefined,
+      frequency: frequency,
+      amount: amount,
+      signature: undefined as string | undefined,
+      metadata: metadata as any | undefined
+    };
+
+    if (privateKey != null) {
+      request.signature = tools.sign(privateKey, JSON.stringify(request));
+    }
+
+    let base64Blob = encode(JSON.stringify(request));
+    return base64Blob;
+  }
+
+  static sub(options: any, privateKey?: string): string {
+    let base64EncodedBlob = this.subBlob(options, privateKey);
+    return `nanosub:${base64EncodedBlob}`;
   }
 }
